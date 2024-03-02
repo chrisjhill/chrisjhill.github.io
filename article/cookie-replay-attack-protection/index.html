@@ -1,0 +1,252 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>Cookie replay attack protection</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2009. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>Following on my previous security article on <a href="/article/defensive-programming">Defensive Programming</a> I’ll be talking you through and providing a sample class to protect against replay attacks. Internet security is not one to be taken lightly. There is a saying that Internet Security is a trade-off between security and usability. And that’s true for the most part, but luckily protection against replay attacks does not hinder usability—it’s almost completely transparent to the end users.</p>
+		
+			<p>So let’s jump straight in, what is a replay attack? Essentially a security breach whereby someone poses as someone else using some unique piece of data the user supplied/was issued to/from the Web server. It’s kind of similar to a man-in-the-middle attack. We’re going to be looking at the attack using specifically cookie authorisation, a very common means of implementing a “remember me” function.</p>
+		
+			<p>Replay attacks are often one thing that programmers forget to protect against. This really is quite a worry since I want my identity to be safe online and I’m sure you do, too. Let’s look at the problem in a readable form:</p>
+		
+			<ol>
+				<li>John logs into example.org.</li>
+				<li>Server issues John a cookie with value of 12345.</li>
+				<li>John revisits example.org again and is logged in.</li>
+				<li>Evil Joe looked at the request and steals the cookie.</li>
+				<li>Joe visits example.org which logs him in as John.</li>
+			</ol>
+			
+			<p>Due to the very nature of the attack it isn’t possible to 100% protect against it, it’s inherently insecure. But there are ways to increase the security, and that’s to add another step after (3) above:</p>
+			
+			<ol start="4">
+				<li>Server reissues John a cookie with value of 67891.</li>
+			</ol>
+			
+			<p>It’s called token regeneration. We have recognised that John has a valid cookie, logged the user in, removed their old cookie and recreate a new one that no one else should know. Even if Joe had the old cookie it’s no longer valid and has to perform the same actions as (4) in the original way.</p>
+			
+			<p>Another method is to add some kind of time restriction, so only make the cookie valid for a certain amount of days. So if Joe happens to stumble across the cookie after a month he should no longer be able to login as John. Another to add in which browser John is using, the chances of John using exactly the same as Joe is unlikely. But again it is possible, so don’t rely on it!</p>
+			
+			<p>Firstly we will need another table into our database (I’m going to assume you have a semi-advanced knowledge of databases and PHP), I’ll call it <tt>login_token</tt>.</p>
+			
+			<p><img src="./login_tokens_table.png" /></p>
+			
+			<p>With that in place, let’s create a couple of small PHP class to do the remembering. I’ll start with a nice cookie class<br />so our remembering function is a little neater (Remember, we want <a href="http://en.wikipedia.org/wiki/Cohesion_%28computer_science%29">high cohesion</a> and <a href="http://en.wikipedia.org/wiki/Coupling_%28computer_science%29">low coupling</a>!).</p>
+		
+			<pre>&lt;?php
+class Cookie
+{
+    /**
+     * Sets a cookie via pre-set parameters.
+     *
+     * $expires is the number of days to keep the cookie alive.
+     *
+     * @static
+     * @param string $name
+     * @param string $value
+     * @param integer $expires
+     */
+    public static function save($name, $value, $expires) {
+        setcookie($name, $value, ($expires * (3600 * 24)), '/', false);
+    }
+
+    /**
+     * Returns a cookie through the name
+     *
+     * @static
+     * @param string $name
+     */
+    public static function get($name) {
+        return isset($_COOKIE[$name])
+            ? $_COOKIE[$name]
+            : '';
+    }
+
+    /**
+     * Deletes the cookie.
+     *
+     * @static
+     * @param string $name
+     */
+    public static function delete($name) {
+        setcookie($name, '', (time() - 3600));
+    }
+}</pre>
+
+			<p>Now we’ll create our actual remembering class:</p>
+
+			<pre lang="php">&lt;?php
+class RememberMe
+{
+    /**
+     * See if the user has a login for this site.
+     *
+     * &lt;ul&gt;
+     *      &lt;li&gt;Does the auth cookie look correct?&lt;/li&gt;
+     *      &lt;li&gt;Can we find the auth cookie in the datbase?&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param $cookieValue string
+     * @return boolean
+     */
+    public function attemptRememberMeLogin($cookieValue) {
+        // Does it have a correct MD5 hash length?
+        if (strlen($cookieValue) == 32) {
+            // Does the cookie exist in the database?
+            $query = mysql_query("
+                SELECT  `user_id`
+                FROM    `login_token`
+                WHERE   `login_value` = '" . mysql_real_escape_string($cookieValue) . "'
+                LIMIT   1
+            ");
+
+            // Cookie found?
+            if (mysql_num_rows($query) &gt;= 1) {
+                // Get the data
+                $data = mysql_fetch_assoc($query);
+                    
+                // Reset the cookie
+                $this-&gt;remember($data['user_id']);
+                    
+                // Yes, we have managed to log the user in
+                return true;
+            }
+        }
+
+        // User has a cookie, but it is invalid
+        Cookie::delete('auth');
+
+        return false;
+    }
+
+    /**
+     * Set the remember me cookie.
+     *
+     * &lt;ul&gt;
+     *      &lt;li&gt;Firstly remove all the past cookies they may have had.&lt;/li&gt;
+     *      &lt;li&gt;Generate the new MD5 cookie.&lt;/li&gt;
+     *      &lt;li&gt;Create the cookie on users computer.&lt;/li&gt;
+     *      &lt;li&gt;Insert the cookie into the database.&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param int $userId
+     */
+    public function remember($userId) {
+        // Remove the old cookies
+        // Client cookie
+        Cookie::delete('auth');
+        
+        // Database cookie
+        mysql_query("
+            DELETE FROM `login_token`
+            WHERE       `user_id` = " . (int)$userId . "
+        ");
+
+        // Create the new cookies
+        // Client cookie
+        $cookie = md5($userId . $_SERVER['REQUEST_TIME']);
+        Cookie::save('auth', $cookie, 7);
+
+        // Database cookie
+        mysql_query("
+            INSERT INTO `login_token`
+                (`user_id`, `token_value`, `token_valid`)
+            VALUES
+                (   " . (int)$userId . ",
+                    '" . mysql_real_escape_string($cookie) . "',
+                    " . ($_SERVER['REQUEST_TIME'] + (7 * (3600 * 24))) . "
+                )
+        ");
+    }
+}</pre>
+
+			<p>And there we go. We have successfully written an almost secure way to implement a “remember me” function. Of course you can take this further by adding even more security, such as:</p>
+
+			<ul>
+				<li>Prepared SQL statements.</li>
+				<li>Add the user agent to the database (You expect returning visitors to use the same browser, if not then they will need to login again anyway (unless they upgrade their browser, but this is infrequent!))</li>
+				<li>Store the user ID in the cookie to reduce hash collisions.</li>
+				<li>And a myriad of other ways.</li>
+			</ul>
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
