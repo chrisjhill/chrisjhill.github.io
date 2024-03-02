@@ -1,0 +1,115 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>Broken Windows</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2016. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>There is an interesting theory that came around in 1982 by two American social scientists named James Wilson and George Kelling called &#8220;<a href="https://en.wikipedia.org/wiki/Broken_windows_theory">Broken Windows</a>&#8220;. This stated that maintaining law and order quickly in urban areas would result in fewer crimes and de-escalating crimes of severity. Their paper stated:</p>
+
+			<blockquote>
+				<p>Consider a building with a few broken windows. If the windows are not repaired, the tendency is for vandals to break a few more windows. Eventually, they may even break into the building, and if it&#8217;s unoccupied, perhaps become squatters or light fires inside.</p>
+
+				<p>
+					Or consider a pavement. Some litter accumulates. Soon, more litter accumulates. Eventually, people even start leaving bags of refuse from take-out restaurants there or even break into cars.<br />
+
+					<cite><a href="http://www.theatlantic.com/magazine/archive/1982/03/broken-windows/304465/">Broken Windows, the police and neighborhood safety</a></cite>
+				</p>
+			</blockquote>
+			
+			<p>So how does this tie into Web Development? Like the example above, if there are &#8220;bad things&#8221; in the code then developers will be more likely to further contaminate that file with &#8220;bad&#8221; things&#8221;, because the file already needs a refactor. But that refactor will happen next week/month/year (never, most likely) and everything will be right again in the world. So there&#8217;s no sense in doing that now and blowing the deadline for the whole project which needs to be shipped in 2 weeks.</p>
+			
+			<p>Sound familiar?</p>
+			
+			<p>This solution doesn&#8217;t make sense for most programming languages, but it does for CSS due to its weird specificity and cascading nature. You have a new file for each project named <var>shame.css</var> which contains all of the hacks that you have had to add in order to ship on time. This is great because of several reasons:</p>
+			
+			<ol>
+				<li>All of your hacks are self contained within a single file, not contaminating the rest of the sane code.</li>
+				<li>You are admitting there are hacks, but each hack should have its own comment saying why it&#8217;s necessary, what it does, and how it can be fixed.</li>
+				<li>Have a spare hour? You can easily dive straight in and fix a hack.</li>
+				<li>You can see who was responsible for the hacks (<var>$ git blame -l shame.css</var>).</li>
+			</ol>
+
+			<p>The forth point is actually not a blame game, but you can possibly spot trends. If one developer is making a lot of hacks with regards to, say, the grid system then they may need to be given a quick chat on how it works and what they were doing wrong &#8211; this will make them more productive in the future.</p>
+			
+			<p>It&#8217;s also a file where someone who isn&#8217;t that well versed in CSS can place a snippet, knowing that someone will come along and implement it correctly in the codebase in the future.</p>
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
