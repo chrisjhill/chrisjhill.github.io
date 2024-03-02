@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>Amazon S3 batch uploading + upload stream</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2011. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>It was hard to track down if these two features were possible with the latest Amazon S3 SDK, but they are and have documented them for you below.</p>
+
+			<h2>Batch uploading</h2>
+
+<pre>
+// Create Amazon S3 instance
+$s3 = new AmazonS3();
+
+// Send a file to Amazon S3
+// Note we are calling batch()
+$response = $s3-&gt;batch()-&gt;create_object('myBucket','myFile.jpg', array(
+    'fileUpload' =&gt; fopen('myFile.jpg', 'r')
+));
+
+// Send another file to Amazon S3
+$response = $s3-&gt;batch()-&gt;create_object('myBucket','myOtherFile.jpg', array(
+    'fileUpload' =&gt; fopen('myOtherFile.jpg', 'r')
+));
+
+// We have batched all of the files, now send
+$s3-&gt;batch()-&gt;send();
+</pre>
+<h2>Sending a stream of data to Amazon S3</h2>
+<pre>
+// Create Amazon S3 instance
+$s3 = new AmazonS3();
+
+// Send a file to Amazon S3
+// Note we are using the 'body' parameter and not the 'fileUpload'
+$response = $s3-&gt;create_object('myBucket','myFile.txt', array(
+    'body' =&gt; 'Hello, I was dynamically streamed to this file.'
+));
+</pre>
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
