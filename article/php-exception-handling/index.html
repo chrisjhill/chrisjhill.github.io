@@ -1,0 +1,256 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>PHP exception handling</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2007. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>Arguably one of the best things to come out of <acronym title="PHP: Hypertext Preprocessor">PHP</acronym>5 was its improved <acronym title="Object Orientated">OO</acronym> support. With OO comes easier separation of presentation, data, and business logic layers which leads to reusable code and better code management, amongst a host of others.</p>
+		
+			<h2>Example of an error</h2>
+		
+			<p>Exception handling appears daunting a first, but once you understand the concept it is very easy to use, and incredibly powerful. Let&#8217;s start off with an example of an error to demonstrate what we mean.</p>
+		
+			<pre>
+$a = Array("foo", "bar", "foobar");
+$b = 10;
+$c = $a + $b;
+echo($c);</pre>
+
+			<p>That small PHP block when parsed will produce the following error: <span class="tt">Fatal error: Unsupported operand types in simple_php_error.php on line 5.</span></p>
+
+			<p>We get that error because we are trying to add an <span class="tt">array</span> data type to an <span class="tt">integer</span> data type. Since we can not possibly add them together, an error occurs. Although these are not the type of errors we will be dealing with via exception handling, they do give you an idea of why we would want to hide errors.</p>
+
+			<h2>Why use exception handlers?</h2>
+
+			<p>First and foremost it makes your applications far more professional. Users visiting your site do not want to be bombarded with error messages here, there and everywhere. Not only do they not want to see them, but inexperienced users could get confused&#8212;did they create the error themselves? Did they somehow brake the site? Oh dear, let&#8217;s quickly run away from this site!</p>
+
+			<p>By using exception handling we can catch these errors and deal with them how we choose. We could even hide them completely and just log them for you to observe and correct at a later date.</p>
+
+			<p>So who uses exception handling? Well, me for one. Not only me, but nearly ever other major PHP developer will rely upon them at some time in a project. So should you.</p>
+
+			<h2>Alternatives to exception handling</h2>
+
+			<p>There are several alternatives to exception handling, but each have their downfalls.</p>
+
+			<ul>
+				<li><span class="tt">error_reporting()</span></li>
+				<li>The <span class="tt">@</span> operator</li>
+			</ul>
+
+			<p><span class="tt">error_reporting()</span> is a function that tells the PHP engine what errors to display. Whilst in development stages, it is a good idea to have it set as <span class="tt">E_ALL</span>, and whilst in live stage, hide all the errors&#8212;after all, we don&#8217;t want them possibly knowing our database or file structure&#8212;that could become a security risk. The downfall of <span class="tt">error_reporting()</span> is that you can only show and hide the errors, you cannot <span class="italic">handle</span> them.</p>
+
+			<p>The <span class="tt">@</span> operator suppresses any errors that may occur. You add it before a statement which could possibly cause an error, for instance:</p>
+
+			<pre>
+@fopen('location/of/your/script.php', 'r+');</pre>
+
+			<p>The downfalls of this operator is that it is greedy. By including the file via this method you will also be suppressing any errors within that file also. Whilst in development stages this is a very bad idea. If you have done this or rely upon it, give yourself a smack on the hand. The only realistic reason you should use the <span class="tt">@</span> operator is when you are attempting to load files externally to your file system, or within try and catch statements.</p>
+
+			<h2>The basic try and catch statement</h2>
+
+			<p>We can handle errors by using a try and catch statement. We <i>try</i> and execute some code, and <i>catch</i> any errors which may occur. Let&#8217;s have a quick look at the basic syntax.</p>
+
+			<pre>
+echo('Try and catch exercise');
+ 
+try {
+    throw new Exception('I do not want my password revealed!');
+    echo('My password is: php_is_great');
+} catch(Exception $e) {
+    echo('An error occurred: ' . $e-&gt;getMessage());
+}</pre>
+
+			<p>When you run this, you will get the following:</p>
+
+			<pre lang="html">Try and catch exercise
+An error occurred: I do not want my password revealed!</pre>
+
+			<p>You can see that line 6 is never executed because we threw an error&#8212;we told the PHP engine that an error had occurred on line 5. As the error occurred in a <span class="tt">try</span> statement, it will attempt to catch any errors. On line 5 we threw the exception <span class="tt">Exception</span>, but this could have been anything as long as we define it as a valid Exception class.</p>
+
+			<h2>Creating our own exception classes</h2>
+
+			<p>Let&#8217;s try a simple scenario where one needs a certain type of input, and will reject everything else. A simple example would be a cup of coffee. To make a refreshing cup, one needs to use boiling water, not cold water. Lets create a simple PHP class to simulate making a cup of coffee.</p>
+
+			<pre>&lt;?php
+class Coffee
+{
+    private $waterTemperature = 0;
+    private $poured = false;
+    
+    public function boilWater($temperature) {
+        $this-&gt;waterTemperature = $temperature;
+    }
+    
+    public function pourWater() {
+        $this-&gt;poured = true;
+        echo('Ahhh. A nice cup of coffee.');
+    }
+}
+ 
+$myCoffee = new Coffee();
+$myCoffee-&gt;boilWater(10);
+$myCoffee-&gt;pourWater();</pre>
+
+			<p>With this code, we are susceptible to a cold cup of coffee. At the moment we are only boiling the water to 10 degrees Celsius, which is nowhere near hot enough&#8212;we will be pouring ourselves a cold cup of coffee! So let&#8217;s make a few amendments so this tragedy will never arise.</p>
+
+			<pre>&lt;?php
+class ColdWaterException extends Exception
+{
+    public function __construct($message) {
+        parent::__construct($message, 0);
+    }
+    
+    public function __toString() {
+        echo('Error: ' . parent::getMessage());
+    }
+}
+ 
+class Coffee
+{
+    private $waterTemperature = 0;
+    private $minTemperature = 50;
+    
+    public function boilWater($temperature) {
+        $this-&gt;waterTemperature = $temperature;
+    }
+    
+    public function pourWater() {
+        try {
+            $this-&gt;checkTemperature();
+            echo('Ahhh. A nice cup of coffee.');
+        } catch (ColdWaterException $e) {
+            $e-&gt;__toString();
+        }
+    }
+    
+    private function checkTemperature() {
+        if ($this-&gt;waterTemperature &lt;= $this-&gt;minTemperature) {
+            throw new ColdWaterException('Water too cold.');
+        }
+    }
+}
+ 
+$myCoffee = new Coffee();
+$myCoffee-&gt;boilWater(49);
+$myCoffee-&gt;pourWater();</pre>
+
+			<h2>Explaining the code</h2>
+
+			<p>As I said at the start, this may seem daunting. Read it through and try and understand what it is doing.</p>
+
+			<p>Read it through twice? Great. So, we first start off by creating the class <span class="tt">ColdWaterException</span> which will extend the <span class="tt">Exception</span> class. Try as you might, you will not be able to see the class in the above code. Why not? Well simply because it is built into PHP itself. All you need to know for now is that it is a good thing.</p>
+
+			<p>We have now created the custom exception class, extended the <span class="tt">Exception</span> class, so now it is time to populate it. As usual we will create the constructor method which will be called automatically when an instance is created. This takes one parameter called <span class="tt">$message</span> which is the error message we send. We call the <span class="tt">parent::__construct()</span> which does everything it needs to do in the <span class="tt">Exception</span> class which we don&#8217;t see.</p>
+
+			<p>So now the only thing left to do is to handle the error. This is where the function <span class="tt">__toString()</span> comes into play. The function is just to output the message you want to be seen, if any.</p>
+
+			<p>The <span class="tt">Coffee</span> class is quite similar to the original, with a few minor modifications. The first thing you might see is that there is another function, <span class="tt">checkTemperature()</span>. This function simply returns a <span class="tt">ColdWaterException</span> error if the temperature is below 50, since we want our coffee to be nice and hot. The <span class="tt">pourWater()</span> function uses the try and catch statement which we looked at earlier. If there is no exception then we echo out the success message, but if the statement has found a <span class="tt">ColdWaterException</span> then it will output the error message.</p>
+
+			<p>There are a few lines I would like to draw your attention to:</p>
+
+			<ul>
+				<li>Line 26: notice that we use the name of the Exception we threw, not just <span class="tt">Exception</span>. We also set the error object to <span class="tt">$e</span> which we make use of on the following line.</li>
+				<li>Line 33: the most important line in the script. This is where we tell PHP that an exception has occurred.</li>
+				<li>Line 39: this is the line where we set the temperature. To try this out on your own, try setting this to different values.</li>
+			</ul>
+
+			<h2>Conclusion</h2>
+
+			<p>I am going to do the conclusion slightly different and actually go back to the first block of code and explain why we didn&#8217;t use exception handling on it. Let&#8217;s first recap on the code:</p>
+
+			<pre>&lt;?php
+$a = Array("foo", "bar", "foobar");
+$b = 10;
+$c = $a + $b;
+echo($c);</pre>
+
+			<p>We can make this code parse by adding five extra characters. All we need to do it tell PHP that <span class="tt">$a</span> is an <span class="tt">integer</span> and not an <span class="tt">array</span>. &#8220;Ahh, of course&#8221; I can hear you say, &#8220;&#8230; but how can we do that?&#8221;. The answer is type casting. Type casting requires that you put the name of the data type you want to turn the value into at the start in brackets. Let&#8217;s look at it in this example.</p>
+
+			<pre>&lt;?php
+$a = Array("foo", "bar", "foobar");
+$b = 10;
+$c = (int)$a + $b;
+echo($c);</pre>
+
+			<p>Run this code and you will see the output as 11. That&#8217;s right, 11. Not 10. The reason is that <span class="tt">$a</span> is not <span class="tt">null</span>, it contains a value, so it returns when cast as an integer the value 1. The reason for this small example is just to let you know that exception handling shouldn&#8217;t be used every time a error might occur&#8212;there are sometimes better ways.</p>	
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
