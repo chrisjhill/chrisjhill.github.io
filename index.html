@@ -285,13 +285,64 @@
 {/loop}
 &lt;/table&gt;</textarea><br />
 
+						<!--
+						RUNNING ON STATIC HOST.
 						<button name="i-made__parser_submit" id="i-made__parser_submit" class="button">
 							<i class="fas fa-play"></i>
 							Parse this templating language into HTML
 						</button>
+						//-->
 					</td>
 					<td>
+						<!--
+						RUNNING ON STATIC HOST.
 						<p id="template_output_introduction" class="pre-load">Submit the form<br />to see the output here</p>
+						//-->
+
+						<p id="template_output_introduction" class="loaded"><!-- User and site variables //-->
+
+						<p>Hello, I'm Chris Hill from Test site name.</p>
+
+						<!-- Example of setting and outputting variables //-->
+						  <p>{foo} exists and it's value is: bar. In uppercase that is BAR.</p>
+
+						<!-- Save information to a users account //-->
+						<p>Chris Hill's {bar} is: foobar.</p>
+
+						<!-- If-elseif-else statements //-->
+						  <p>Site name is Test site name.</p>
+
+						<!-- Temporary variables with a math equation //-->
+						<p>The answer to (16 * 100) + 1 is: 1,601.</p>
+
+						<!-- Loop over users //-->
+						<table>
+						<tbody><tr>
+						  <th>User ID</th>
+						  <th>User name</th>
+						  <th>Users {bar}</th>
+						</tr>
+						  <tr>
+						    <td>1 (You)</td>
+						    <td>Chris Hill</td>
+						    <td>foobar</td>
+						  </tr>
+						  <tr>
+						    <td>2</td>
+						    <td>John Doe</td>
+						    <td>I have no bar</td>
+						  </tr>
+						  <tr>
+						    <td>3</td>
+						    <td>Joe Bloggs</td>
+						    <td>I have no bar</td>
+						  </tr>
+						  <tr>
+						    <td>4</td>
+						    <td>Mary Small</td>
+						    <td>I have no bar</td>
+						  </tr>
+						</tbody></table></p>
 					</td>
 				</tr>
 			</tbody>
@@ -304,10 +355,10 @@
 
 			<div>
 				<ul>
-					<li class="animate animate--onscroll"><i class="fas fa-home"></i>      Powering over 30,000 sites</li>
-					<li class="animate animate--onscroll"><i class="fas fa-users"></i>     Over 200,000 members</li>
+					<li class="animate animate--onscroll"><i class="fas fa-home"></i> Powering over 30,000 sites</li>
+					<li class="animate animate--onscroll"><i class="fas fa-users"></i> Over 200,000 members</li>
 					<li class="animate animate--onscroll"><i class="far fa-chart-bar"></i> 2,500,000 page views per month</li>
-					<li class="animate animate--onscroll"><i class="fas fa-comment"></i>   6,000,000 forum posts</li>
+					<li class="animate animate--onscroll"><i class="fas fa-comment"></i> 6,000,000 forum posts</li>
 				</ul>
 			</div>
 		</section>
@@ -315,7 +366,6 @@
 
 	<hr />
 
-	
 	<section class="container i-made__mmog">
 		<h2>
 			I made an MMOG
@@ -383,6 +433,8 @@
 					<th>Asteroids</th>
 					<td colspan="2"><label for="asteroid">Count</label> <input type="text" name="asteroid" id="asteroid" class="battle__ship_count" value="100"></td>
 				</tr>
+				<!--
+				RUNNING ON STATIC HOST.
 				<tr class="no-border">
 					<td colspan="3">
 						<button class="battle__submit button">
@@ -399,11 +451,405 @@
 						</select>
 					</td>
 				</tr>
+				//-->
 			</tbody>
 		</table>
 
 		<section class="battle__output">
+			<!--
+			RUNNING ON STATIC HOST.
 			<p class="battle__output_introduction">Submit the form above<br />to see the output here</p>
+			//-->
+
+			<ul id="wave_selector">
+				<li rel="1" class="active">Wave 1</li>
+				<li rel="2">Wave 2</li>
+				<li rel="3">Wave 3</li>
+			</ul>
+
+			<div style="clear:both;padding:0">
+				<section id="wave1" class="wave_report" style="display: block;">
+					<table>
+						<tbody>
+							<tr>
+								<td></td>
+								<th colspan="4" style="text-align:center">Defending</th>
+								<th colspan="4" style="text-align:center">Attacking</th>
+							</tr>
+							<tr>
+								<th>Ship</th>
+								<th style="width:85px">Total</th>
+								<th style="width:85px">Destroyed</th>
+								<th style="width:85px">Frozen</th>
+								<th style="width:85px;border-right:2px solid #AEAA9A">Stolen</th>
+								<th style="width:85px">Total</th>
+								<th style="width:85px">Destroyed</th>
+								<th style="width:85px">Frozen</th>
+								<th style="width:85px">Stolen</th>
+							</tr>
+							<tr>
+								<th>EMP freezing ship</th>
+								<td>5,000</td>
+								<td>1,959</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>4,000</td>
+								<td>3,831</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Attacking ship 1</th>
+								<td>700</td>
+								<td>274</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>500</td>
+								<td>479</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Attacking ship 2</th>
+								<td>2,000</td>
+								<td>800</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">1,200</td>
+								<td>3,000</td>
+								<td>558</td>
+								<td>0</td>
+								<td>2,442</td>
+							</tr>
+							<tr>
+								<th>Attacking ship 3</th>
+								<td>1,500</td>
+								<td>600</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">900</td>
+								<td>1,750</td>
+								<td>325</td>
+								<td>0</td>
+								<td>1,425</td>
+							</tr>
+							<tr>
+								<th>Attacking ship 4</th>
+								<td>800</td>
+								<td>313</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>400</td>
+								<td>383</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Stealing ship</th>
+								<td>1,000</td>
+								<td>110</td>
+								<td>320</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>4,000</td>
+								<td>148</td>
+								<td>700</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Salvage ship</th>
+								<td>500</td>
+								<td>55</td>
+								<td>160</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Asteroid stealing ship</th>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>2,000</td>
+								<td>1,915</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Totals</th>
+								<th>11,500</th>
+								<th>4,111</th>
+								<th>480</th>
+								<th style="border-right:2px solid #AEAA9A">2,100</th>
+								<th>15,650</th>
+								<th>7,639</th>
+								<th>700</th>
+								<th>3,867</th>
+							</tr>
+							<tr>
+								<th>&nbsp;</th>
+								<th colspan="4"><small>Defenders salvaged 113,285 primary and 29,215 secondary.</small></th>
+								<th colspan="4"><small>Attackers have stolen 10 asteroids.</small>
+								</th>
+							</tr>
+						</tbody>
+					</table>
+				</section>
+				<section id="wave2" class="wave_report">
+					<table>
+						<tbody>
+							<tr>
+								<td></td>
+								<th colspan="4" style="text-align:center">Defending</th>
+								<th colspan="4" style="text-align:center">Attacking</th>
+							</tr>
+							<tr>
+								<th>Ship</th>
+								<th style="width:85px">Total</th>
+								<th style="width:85px">Destroyed</th>
+								<th style="width:85px">Frozen</th>
+								<th style="width:85px;border-right:2px solid #AEAA9A">Stolen</th>
+								<th style="width:85px">Total</th>
+								<th style="width:85px">Destroyed</th>
+								<th style="width:85px">Frozen</th>
+								<th style="width:85px">Stolen</th>
+							</tr>
+							<tr>
+								<th>EMP freezing ship</th>
+								<td>3,041</td>
+								<td>10</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>169</td>
+								<td>169</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Attacking ship 1</th>
+								<td>426</td>
+								<td>1</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>21</td>
+								<td>21</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Attacking ship 2</th>
+								<td>2,442</td>
+								<td>334</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">2,108</td>
+								<td>1,200</td>
+								<td>651</td>
+								<td>0</td>
+								<td>549</td>
+							</tr>
+							<tr>
+								<th>Attacking ship 3</th>
+								<td>1,425</td>
+								<td>195</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">1,230</td>
+								<td>900</td>
+								<td>488</td>
+								<td>0</td>
+								<td>412</td>
+							</tr>
+							<tr>
+								<th>Attacking ship 4</th>
+								<td>487</td>
+								<td>1</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>17</td>
+								<td>17</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Stealing ship</th>
+								<td>890</td>
+								<td>46</td>
+								<td>13</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>3,852</td>
+								<td>218</td>
+								<td>425</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Salvage ship</th>
+								<td>445</td>
+								<td>23</td>
+								<td>6</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Asteroid stealing ship</th>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>85</td>
+								<td>85</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Totals</th>
+								<th>9,156</th>
+								<th>610</th>
+								<th>19</th>
+								<th style="border-right:2px solid #AEAA9A">3,338</th>
+								<th>6,244</th>
+								<th>1,649</th>
+								<th>425</th>
+								<th>961</th>
+							</tr>
+							<tr>
+								<th>&nbsp;</th>
+								<th colspan="4"><small>Defenders salvaged 166,673 primary and 41,327 secondary.</small></th>
+								<th colspan="4"><small>Attackers have stolen 0 asteroids.</small>
+								</th>
+							</tr>
+						</tbody>
+					</table>
+				</section>
+				<section id="wave3" class="wave_report">
+					<table>
+						<tbody>
+							<tr>
+								<td></td>
+								<th colspan="4" style="text-align:center">Defending</th>
+								<th colspan="4" style="text-align:center">Attacking</th>
+							</tr>
+							<tr>
+								<th>Ship</th>
+								<th style="width:85px">Total</th>
+								<th style="width:85px">Destroyed</th>
+								<th style="width:85px">Frozen</th>
+								<th style="width:85px;border-right:2px solid #AEAA9A">Stolen</th>
+								<th style="width:85px">Total</th>
+								<th style="width:85px">Destroyed</th>
+								<th style="width:85px">Frozen</th>
+								<th style="width:85px">Stolen</th>
+							</tr>
+							<tr>
+								<th>EMP freezing ship</th>
+								<td>3,031</td>
+								<td>0</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Attacking ship 1</th>
+								<td>425</td>
+								<td>0</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Attacking ship 2</th>
+								<td>549</td>
+								<td>549</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>2,108</td>
+								<td>153</td>
+								<td>0</td>
+								<td>1,955</td>
+							</tr>
+							<tr>
+								<th>Attacking ship 3</th>
+								<td>412</td>
+								<td>412</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>1,230</td>
+								<td>89</td>
+								<td>0</td>
+								<td>1,141</td>
+							</tr>
+							<tr>
+								<th>Attacking ship 4</th>
+								<td>486</td>
+								<td>0</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Stealing ship</th>
+								<td>844</td>
+								<td>130</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>3,634</td>
+								<td>0</td>
+								<td>424</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Salvage ship</th>
+								<td>422</td>
+								<td>65</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Asteroid stealing ship</th>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td style="border-right:2px solid #AEAA9A">0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th>Totals</th>
+								<th>6,169</th>
+								<th>1,156</th>
+								<th>0</th>
+								<th style="border-right:2px solid #AEAA9A">0</th>
+								<th>6,972</th>
+								<th>242</th>
+								<th>424</th>
+								<th>3,096</th>
+							</tr>
+							<tr>
+								<th>&nbsp;</th>
+								<th colspan="4"><small>Defenders salvaged 143,470 primary and 35,030 secondary.</small></th>
+								<th colspan="4"><small>Attackers have stolen 0 asteroids.</small>
+								</th>
+							</tr>
+						</tbody>
+					</table>
+				</section>
+			</div>
 		</section>
 
 		<section class="col__twin">
@@ -415,8 +861,6 @@
 				<p>As the sole developer, I wrote and maintained over 100,000 lines of code, both on the front &amp; backend, as well as the admin control panel, and the database schema. Particular attention needed to be paid to security and speed, as often there would be hundreds of players online at once. <a href="https://github.com/chrisjhill/MMOG/blob/master/Library/Model/Battle/Fight.class.php">The source code for this is hosted on GitHub</a>.</p>
 			</div>
 		</section>
-
-
 	</section>
 
 	<hr />
