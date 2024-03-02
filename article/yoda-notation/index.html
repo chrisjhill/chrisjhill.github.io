@@ -1,0 +1,121 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>Yoda natation</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2013. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>Everyone&#8217;s done it, they&#8217;ve missed the second equals sign in an if-statement and created an assignment instead. Much tutting, shaking of the head, and a little chuckle ensues as you realise your error. There is a thought amongst some that Yoda notation is the way to go, so named because it switches the comparative&#8217;s to produce errors instead of unexpected behaviour. Consider the following:</p>
+
+			<pre>
+if ($theSkyColour = 'blue') {
+	// This will always be called, because the value will be "returned"
+	// Equivalent of if ('blue') {
+}
+</pre>
+			<p>If you would switch the comparatives around you would end up with:</p>
+
+			<pre>
+if ('blue' = $theSkyColour) {
+	// I will produce an error
+	// PHP Parse error:  syntax error, unexpected '=' in file.php
+}
+</pre>
+
+			<p>So you immediately know there is something wrong and you can correct it before it lands in production. But is this the best way to go about it? Possibly, it&#8217;s a matter of opinion; it&#8217;s been around for years and has made its way into some of the largest PHP projects such as WordPress, Symfony, etc.</p>
+
+			<h2>Disadvantages</h2>
+
+			<ol>
+				<li>It&#8217;s harder to read: &#8220;Is the sky blue?&#8221; is much easier for us to understand than &#8220;Blue is the sky colour?&#8221;.</li>
+				<li>Is maintainability more important than a potential bug? I&#8217;m sure there will be people on both sides of the fence, and some in the middle collecting splinters.</li>
+				<li>Nowadays IDE&#8217;s tend to prevent this kind of thing from happening, you can set them to give warnings on assignments in conditions.</li>
+				<li>You can use a piece of software like <a href="https://github.com/squizlabs/PHP_CodeSniffer">PHP Code Sniffer</a> in your build tool and reject anything that contains these potential nasties.</li>
+				<li>And, most importantly, it isn&#8217;t a silver bullet; it will do nothing to prevent the code below from being incorrect or error&#8217;ing:</li>
+			</ol>
+
+			<pre>
+if ($foo = $bar) {
+	// I am always run and no errors are ever thrown
+}
+			</pre>
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
