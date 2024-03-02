@@ -1,0 +1,170 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>Update: Reversi board game in PHP and Javascript</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2012. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>I like playing the occasional game of <a href="http://en.wikipedia.org/wiki/Reversi">Reversi</a>, and thought it would prove to be an interesting project (creating something like <a href="http://www.redhotpawn.com/">RedHotPawn</a> for chess). Several hours programming later I had a simple working prototype. A couple more hours later I added in some missing features and smartened everything up.</p>
+		
+			<h2>Demonstration and Download</h2>
+			
+			<p><a href="http://laboratory.chrisjhill.co.uk/reversi/">To view a demonstration of the code in action, click here.</a></p>
+			
+			<p><a href="https://github.com/chrisjhill/Reversi">You can view the Github repository here.</a></p>
+			
+			<h2>The PHP backend</h2>
+			
+			<p>This type of program is often used in online games like <a href="https://www.daisyslots.com/all-games/slots/action-bank/">action bank</a> slots and GoBonanza. It is designed to be flexible &#8212; it can handle boards of any size and will place the starting 4 disks in the center. The PHP is also very quick &#8212; the size of the board does not really effect the performance due to the way its programmed. It only allows legal moves to be played, each move needs to flip at least one of your opponents disks, if you play an invalid move it will give you the option to skip your play.</p>
+			
+			<h2>A quick snippet of the traversing function in the PHP class</h2>
+			
+			<pre>
+&lt;?php
+/**
+ * Traverse the board to see if we can take any of our opponants disks.
+ *
+ * To traverse the board we can add, substract, or do nothing with each X and Y coord.
+ * Keep traversing until we reach an empty position, a wall, or our own disk. Once
+ * reached an end, traverse back down the coords replacing the disks with our own.
+ *
+ * @param $xDiff int
+ * @param $yDiff int
+ * @access private
+ */
+public function doTraverse($xDiff, $yDiff) {
+    // Set variables
+    $x = $this-&gt;_x;
+    $y = $this-&gt;_y;
+    $continue = true;
+    
+    // Begin the loop
+    do {
+        // Work out the new coords to test
+        $x += $xDiff;
+        $y += $yDiff;
+        
+        // What is in the next position?
+        $next = isset($this-&gt;_boardContent[$y][$x])
+            ? $this-&gt;_boardContent[$y][$x]
+            : 'e'; // Edge
+
+        // Have we hit an edge or an empty position?
+        if ($next == 'e' || $next == '-') {
+            $continue = false;
+        }
+        
+        // Have we reached our own disk colour?
+        else if ($next == $this-&gt;_turnInPlay) {
+            // We are currently at our own disk, move back one so we are at our
+            // .. last free (potentially) disk.
+            if ($xDiff &gt; 0) { $x--; } else if ($xDiff &lt; 0) { $x++; }
+            if ($yDiff &gt; 0) { $y--; } else if ($yDiff &lt; 0) { $y++; }
+            
+            // Are we where we started?
+            while ($x != $this-&gt;_x || $y != $this-&gt;_y) {
+                // Change this disk to the player who just moved
+                $this-&gt;_boardContent[$y][$x] = $this-&gt;_turnInPlay;
+                
+                // Set the number of disks this flipped
+                $this-&gt;_disksFlipped++;
+                
+                // Move back one coord to begin another replacement
+                if ($xDiff &gt; 0) { $x--; } else if ($xDiff &lt; 0) { $x++; }
+                if ($yDiff &gt; 0) { $y--; } else if ($yDiff &lt; 0) { $y++; }
+            }
+            
+            // We have converted all of the possible disks, exit the traverse
+            $continue = false;
+        }
+    } while ($continue);
+}
+</pre>
+
+			<h2>The Javascript frontend</h2>
+
+			<p>Javascript provides a real-time view of what disks will be flipped. The traversing function is a virtual copy of the PHP classes.</p>
+
+			<h2>Functionality to be built</h2>
+
+			<p>One piece of functionality that is really needed is ensuring a legal move is actually possible. If it isn&#8217;t then it automatically skips to the next player, and if that player cannot play a legal move either then it ends the game. I&#8217;m not sure if it will be best to implement this in either PHP or Javascript &#8212; both options have their benefits.</p>
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
