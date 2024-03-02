@@ -1,0 +1,183 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>Magically dynamic PHP</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2007. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>These two functions are designed to replace the <span class="tt">setXyz()</span> and <span class="tt">getXyz()</span> calls for each and every variable which could possibly be changed. It also simplifies the programming logic and allows us to perform some pretty neat tricks. So without further ado, let&#8217;s jump into an example.</p>
+		
+			<h2>A simple example</h2>
+		
+			<p>To take full advantage of these two functions, you need data whose name will not change but their value can. The first thing that springs to mind is license plates. Here in the <acronym title="United Kingdom">UK</acronym> we have unique license plate numbers which belongs to a car; license plates can be moved from car-to-car&#8230; sorry about the boring subject, fluffy cats and dogs would have much more fun.</p>
+		
+			<pre>&lt;?php
+class LicensePlate
+{
+    private $plate = array('ABC123' =&gt; 'Ford Focus');
+    
+    public function __set($plate, $car) {
+        $this-&gt;plate[$plate] = $car;
+    }
+    
+    public function __get($plate) {
+        return $this-&gt;plate[$plate];
+    }
+}</pre>
+
+			<p>So what is going on here? Well, we have the <span class="tt">plate array</span> which will be the repository for any license plates we create, the <span class="tt">__set</span> function to set them, and the <span class="tt">__get</span> function to, well, get them. Not hard really. Now, we need to write the code to access this class, and it couldn&#8217;t be simpler.</p>
+
+			<pre>&lt;?php
+$plates = new LicensePlate();
+$plates-&gt;ABC123 = 'Mini Cooper';
+echo($plates-&gt;ABC123);</pre>
+
+			<p>Line 3 is the first magic method, and as you can see, we refer directly to the array index of the license plate &#8216;ABC123&#8217;. Since there is nothing in the class such as a function called &#8216;ABC123&#8217;, and since we are setting a value, the <span class="tt">__set()</span> function kicks into action. The function accepts 2 parameters, the actual licence plate (in this case &#8216;ABC123&#8217;, and the value, in this case &#8216;Mini Cooper&#8217;. The setter then simply writes these details to the class array. Line 4 uses the same technique except that it is not trying to set anything; rather it is trying to output something. PHP knows this, and so fires up the <span class="tt">__get()</span> function. This function only accepts one parameter, the license plate. The function simply returns the value of that license plate, &#8216;Mini Cooper&#8217;.</p>
+
+			<p>This example is extremely basic and contains lots of holes. For instance, what if the array index of &#8216;ABC123&#8217; doesn&#8217;t exist? The next script shows a fully working script which has a logger to show you what is going on under the hood.</p>
+
+			<pre>&lt;?php
+class LicensePlate
+{
+    private $log = array();
+    private $plate = array();
+ 
+    public function addPlate($plate, $car) {
+        if (array_key_exists($plate, $this-&gt;plate))
+            $this-&gt;plate[$plate] = $car;
+            $this-&gt;setLogItem('Added ' . $plate . ' as a ' . $car);
+        } else {
+            $this-&gt;setLogItem('The plate ' . $plate . ' already exists.');
+        }
+    }
+    
+    public function __set($plate, $car) {
+        if (array_key_exists($plate, $this-&gt;plate)) {
+            $this-&gt;plate[$plate] = $car;
+            $this-&gt;setLogItem('Changed ' . $plate . '\'s car to ' . $car);
+        } else {
+            $this-&gt;setLogItem('Could not set the car for ' . $plate);
+        }
+    }
+    
+    public function __get($plate) {
+        if (array_key_exists($plate, $this-&gt;plate)) {
+            $this-&gt;setLogItem('Returned ' . $plate . '\'s car');
+            return $this-&gt;plate[$plate];
+        } else {
+            $this-&gt;setLogItem('Could not return the car for ' . $plate);
+        }
+    }
+    
+    private function setLogItem($item) {
+        $this-&gt;log[] = $item;
+    }
+    
+    public function getLog() {
+        return print_r($this-&gt;log);
+    }
+}
+ 
+$plates = new LicensePlate();              // Create the instance
+$plates-&gt;addPlate('ABC123', 'Ford Focus'); // Create ABC123
+$plates-&gt;ABC123 = 'Mini Cooper';           // Amend ABC123
+$foo = $plates-&gt;ABC123;                    // Get ABC123's car
+$plates-&gt;XYZ789 = 'Land Rover';            // Should produce an error
+ 
+$plates-&gt;getLog();                         // Let's see what we did</pre>
+
+			<p>Whilst running this code (why not give it a try?) should produce the following:</p>
+
+			<pre>Array
+(
+    [0] =&gt; Added ABC123 as a Ford Focus
+    [1] =&gt; Changed ABC123's car to Mini Cooper
+    [2] =&gt; Returned ABC123's car
+    [3] =&gt; Could not set the car for XYZ789
+)</pre>
+
+			<h2>Advantages</h2>
+
+			<p>No one likes creating loads and loads of getters and setters&#8212;they make the script bigger and harder to navigate whilst all providing the same functionality. These two functions dispose of all those functions and allow for streamlined applications. But what happens when an attribute of a class needs special attention? Well you can create a unique getter and setter for that sole attribute.</p>
+
+			<p>They really start to shine though when dealing with data which is constant and require only a set amount of variables. One such case is a database table. A database table only accepts a strict set of fields; creating the <span class="tt">__get()</span> and <span class="tt">__set()</span> functionality in a higher class would save a lot of hassle.</p>	
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
