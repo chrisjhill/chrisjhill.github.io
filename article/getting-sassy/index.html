@@ -1,0 +1,196 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>Getting Sassy</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2014. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>My stance on CSS preprocessors in the past has been far from glowing, but I&#8217;m slowly coming around. Slowly being the keyword. But I&#8217;m there now, I love it. I used to think it was just because of variables, but actually the syntax is nicer than CSS. There, I said it, humble pie. And it&#8217;s not just because it&#8217;s leaner, it&#8217;s actually more maintainable, and I&#8217;m going to give you three quick examples why.</p>
+
+		<h2>1. Nesting</h2>
+
+		<p>I used to write CSS on one line, and then indent the next if it was a child of the previous element. This worked really well and helps to understand inheritance and the way the markup is structured, and means you can see as much CSS on the screen at once as possible. I&#8217;ll give you an example:</p>
+<pre>
+&lt;div id="header"&gt;
+    &lt;div class="foo"&gt;
+        &lt;p&gt;
+            &lt;span&gt;Lorem ipsum&lt;/span&gt;
+            &lt;a href="#"&gt;Link&lt;/a&gt;
+        &lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+#header{...}
+    #header .foo{...}
+        #header .foo span{...}
+        #header .foo a{...}
+</pre>
+
+			<p>However, if I now come to change the ID to something different I have to do it on every line. And if I have to change every line that means git has to track that. And if git has to track all those lines, then anyone else making a change means there will be conflicts. As such, it&#8217;s no longer a viable option: git should be able to tell you <em>exactly</em> what has changed, without confusion or conflicts for the tiniest change. With SASS this now looks like:</p>
+<pre>
+#header {
+    .foo {
+        span {
+            ...
+        }
+
+        a {
+            ...
+        }
+    }
+}
+</pre>
+
+			<p>Changed a element ID/class? Obvious. Changed a property? Obvious. No longer need to sift through the line comparing what had changed manually.</p>
+
+			<p>It&#8217;s also less code to write, notice that I haven&#8217;t had to write <var>#header .foo{&#8230;}</var>, I just need to ensure it&#8217;s nested correctly. Of course this still gets compiled to the exact same CSS as the first example, so the output is the same.</p>
+
+			<h2>2. Partials and Imports</h2>
+
+			<p>When you have a large CSS code base, as we do at <a href="https://www.ents24.com">Ents24</a>, you really want to separate each component into their own respective file. Need to update the navigation? Head on over to <var>nav.scss</var>. The footer, well, that&#8217;s in <var>footer.scss</var>! I know that you can do this in CSS with <var>@import</var>, but that&#8217;s a new HTTP connection right there. Have 10, 20, or maybe even 50 of them and suddenly you&#8217;re in trouble. Yes, you could minify the files together but that&#8217;s still a bit of a hassle. It&#8217;s far easier to let SASS do it, and when you have multiple projects which all pick-and-chose the components, it&#8217;s a no-brainer.</p>
+
+			<p>You can have a master CSS file per project that is essentially a list of <var>@import</var>&#8216;s for each component it requires. Each of those components come from a compiled SASS file, and each of those SASS files can make use of a single base file, variable file, and mixin file to make everything streamlined across your project. For instance, consider this folder structure:</p>
+<pre>
+`- sass
+    |- _base.scss
+    |- _variables.scss
+    |- _mixins.scss
+    |- grid.scss
+    |- header.scss
+    |- footer.scss
+    |- nav.scss
+    |- button.scss
+    `- table.scss
+`- css
+    |- grid.scss
+    |- header.scss
+    |- footer.scss
+    |- nav.scss
+    |- button.scss
+    `- table.scss
+`- project
+    |- desktop.css
+    |- desktop.min.css
+    |- mobile.css
+    |- mobile.min.css
+    |- widget.css
+    |- widget.min.css
+    |- foobar.css
+    `- foobar.min.css
+</pre>
+
+			<p>The <var>sass</var> folder will contain the files you edit, these are then automatically compiled down into their respective files in the <var>css</var> folder (the SASS files with an underscore will not get compiled!), and when those files are updated they will trigger the <var>project</var> files to be updated, and then those will be automatically minified for you to use in production.</p>
+
+			<p>You can hopefully suddenly see the huge benefits. <var>desktop.css</var> and <var>mobile.css</var> might actually make use of each of the CSS files, but the widget project might be a tiny thing that people can add to their own sites, and might only require the <var>grid.css</var> and <var>button.css</var> files. You&#8217;ve now a consistent brand feel across everything you do for free, and with ease of maintenance. Win.</p>
+
+			<h2>3. Mixins</h2>
+
+			<p>And lastly we come to mixins. These are small snippets of CSS which are frequently used throughout your codebase which are often annoying to write. An example of this is rounded corners. Remembering each vendor prefix is a pain and quite honestly I can&#8217;t count the number of times I&#8217;ve simply used <var>border-radius</var> in isolation and forgotten about old browsers. <strong>Update</strong>: Although a good example, this is probably bad practice now; you shouldn&#8217;t really use vendor prefixes too much, let older browsers degrade nicely.</p>
+
+			<p>We can define our mixins in our <var>mixins.scss</var> file, something like:</p>
+<pre>
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+          border-radius: $radius;
+}
+</pre>
+
+			<p>And then make use of them in our SASS files:</p>
+
+<pre lang="css">
+#header {
+    @include border-radius(10px);
+
+    div {
+        @include border-radius(8px);
+    }
+}
+</pre>
+
+			<p>This saves us a huge amount of time, makes things easier to maintain, and also gives us a single place to contain horrible things like vendor prefixes, so once you no longer need them you can easily switch them out.</p>
+
+			<h2>To sum up</h2>
+
+			<p>I could have talked about variables, but you already know about them and how they make things easier. I could have talked about how you can easily make drop shadows just by using <var>darken($color-x-feature, 10%)</var>, but that&#8217;s something for you to learn on your own&#8230; wait, I just did. I&#8217;m trying to say there&#8217;s a lot more to SASS than variables. If you&#8217;re a project manager or team lead and you&#8217;re looking to make your employees happier, more productive, and your codebase more maintainable, then you could do a lot worse than having a quick look at SASS.</p>
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
