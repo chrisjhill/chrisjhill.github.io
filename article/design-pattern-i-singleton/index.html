@@ -1,0 +1,195 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>Design Pattern I: Singleton</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2007. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>In this first episode of <acronym title="PHP: Hypertext Preprocessor">PHP</acronym> design patterns, we will be looking at the Singleton, and I have to recommend you to click on the link for <a href="https://www.bmmagazine.co.uk/in-business/the-main-benefits-of-ultrafast-home-broadband/">broadband deals</a> that can help you start online. The Singleton is available in most, if not all, <acronym title="Object Orientated">OO</acronym> languages. The purpose of the Singleton is to only ever have 1 instance of a class available which supplies the rest of the application with consistent data. I would like to point out that my version of a Singleton may differ slightly from other peoples; design patterns are not exact nor are they set in stone.</p>
+		
+			<p>Due to its consistency, the Singleton design pattern is great for classes such as user information, site details, or site settings whereby it is needed all over the system, not just in a single place.</p>
+		
+			<p>To start we need to define our class, and create the static property which will hold the class instance, and create the repository for all our data. This static variable will remain the same over the course of the runtime of the script, allowing us to access our consistent data.</p>
+		
+			<pre>&lt;?php
+class Singleton
+{
+    private static $_Singleton;
+    private $_repository = array();
+ 
+    private function __construct(){}
+}</pre>
+
+			<p>Here we have defined our class, created the static variable, and defined the constructor method. Several things may hit you when you view this snippet, first being that we have an underscore after the dollar sign; this is to show that it is a class attribute. Also, we have made out constructor private and given it no logic. This is because we do not want to create an instances of the class, we instead want to return an instance of the class. We do this by adding another function called <span class="tt">getSingleton()</span> which will set the class and return it. Let&#8217;s see what that will look like.</p>
+
+			<pre>&lt;?php
+class Singleton
+{
+    private static $_Singleton;
+    private $_repository = array();
+ 
+    private function __construct(){}
+ 
+    public function getSingleton() {
+        if (is_null(self::$_Singleton)) {
+            self::$_Singleton = new Singleton();
+        }
+ 
+        return self::$_Singleton;
+    }
+}</pre>
+
+			<p>We first test to see whether or not we have created an instance of the Singleton before, if we haven&#8217;t then we create it, and then return the instance. We use <span class="tt">self::$_Singleton</span> because we are dealing with a static method. The only thing left to do now is to set the data and allow our script to obtain that data.</p>
+
+			<pre>&lt;?php
+class Singleton
+{
+    private static $_Singleton;
+    private $_repository = array('Dog' =&gt; 'Woof!',
+                                 'Cat' =&gt; 'Meow!',
+                                 'Cow' =&gt; 'Mooo!');
+ 
+    private function __construct(){}
+ 
+    public function getSingleton() {
+        if (is_null(self::$_Singleton)) {
+            self::$_Singleton = new Singleton();
+        }
+ 
+        return self::$_Singleton;
+    }
+ 
+    public function retrieve($index)
+    {
+        if (array_key_exists($index, $this-&gt;_repository)) {
+            return $this-&gt;_repository[$index];
+        }
+    }
+}</pre>
+
+			<p>And there we have it, our lovely Singleton design pattern. I have decided for this example for simplicity sake to set some values to play with, in a live application you might query a database or get the values from a file out of the document root. Within the <span class="tt">retrieve()</span> function we first make sure that the index exists within our repository; if it does then it returns the value. Since the Singleton class should contain set values and be called from other classes, the array index should always exist&#8212;you might even want to put some error handling on the function to log anything that it can&#8217;t find. Lets look at am example of this in action.</p>
+<pre>&lt;?php
+class Singleton
+{
+    private static $_Singleton;
+    private $_repository = array('Dog' =&gt; 'Woof!',
+                                 'Cat' =&gt; 'Meow!',
+                                 'Cow' =&gt; 'Mooo!');
+ 
+    private function __construct(){}
+ 
+    public function getSingleton() {
+        if (is_null(self::$_Singleton)) {
+            self::$_Singleton = new Singleton();
+        }
+ 
+        return self::$_Singleton;
+    }
+ 
+    public function retrieve($index) {
+        if (array_key_exists($index, $this-&gt;_repository)) {
+            return $this-&gt;_repository[$index];
+        }
+    }
+ 
+    public function changeCat() {
+        $this-&gt;_repository['Cat'] = 'Baaa!';
+    }
+}
+ 
+$eg1 = Singleton::getSingleton();
+echo 'Singlton 1: ' . $eg1-&gt;retrieve('Cat') . '&lt;br /&gt;';
+ 
+$eg1-&gt;changeCat();
+ 
+$eg2 = Singleton::getSingleton();
+echo 'Singlton 1: ' . $eg1-&gt;retrieve('Cat') . '&lt;br /&gt;';
+echo 'Singlton 2: ' . $eg2-&gt;retrieve('Cat');</pre>
+
+			<p>This should hopefully produce the following:</p>
+
+			<pre>Singlton 1: Meow!
+Singlton 1: Baaa!
+Singlton 2: Baaa!</pre>
+
+			<p>In real life you wouldn&#8217;t change the values of the data stored in a singleton (as that would then become more a Registry pattern, which I will look at next), however, this is just to show you that the data is the same for all instances created.</p>
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
