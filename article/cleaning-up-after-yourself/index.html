@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>Cleaning up after yourself</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2015. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>Everyone likes a nice clean interface; some of the required scaffolding simply gets in the way of what we want to do. A classic example of this is closing things automatically; there are several ways to do this (using tweaked code examples from the PHP manual):</p>
+		
+			<h2>Finally</h2>
+		
+			<p>You can see that, in the code below, we do not call <var>fclose</var> when we throw an exception because the <var>finally</var> will kick in and do it for us automatically.</p>
+
+			<pre>
+function example($url) {
+    try {
+        $handle   = fopen($url, "rb");
+        $contents = '';
+
+        if (false === $handle) {
+            throw Exception('Failed to open stream to URL');
+        }
+
+        while (! feof($handle)) {
+            $contents .= fread($handle, 8192);
+        }
+
+        return $contents;
+    } finally {
+        fclose($handle);
+    }
+}
+</pre>
+
+			<h2>Deferred</h2>
+
+			<p>&#8220;finally&#8221; is an <em>OK</em> method, but then one ends up having try-catch blocks all over the place. It&#8217;s much better to have an interface to do it for us. In the programming language Go there is a feature called <a href="https://tour.golang.org/flowcontrol/12"><var>defer</var></a> which prevents things from executing until a function has complete. It would be nice to do this in PHP. Consider the following using a <var>Defer</var> class and a closure:</p>
+<pre>
+class Defer
+{
+    private $closure;
+
+    public function __construct($closure) {
+        $this-&gt;closure = $closure;
+    }
+
+    public function __destruct() {
+        call_user_func($this-&gt;closure);
+    }
+}
+
+function example($url) {
+    $handle   = fopen($url, "rb");
+    $contents = '';
+
+    // Magic happens here
+    // Pass the $handle into the closure so we have access to it
+    // When the function ends the variables will be out of scope and the $defer deconstructor
+    // .. will be automatically called, closing the connection.
+    $defer = new Defer(function () use ($handle) {
+        fclose($handle);
+    });
+
+    if (false === $handle) {
+        throw Exception('Failed to open stream to URL');
+    }
+
+    while (! feof($handle)) {
+        $contents .= fread($handle, 8192);
+    }
+
+    return $contents;
+}
+</pre>
+
+			<p>The benefits of this are that you can pass anything into the <var>Defer</var> class to have it destroyed (or any other kind of functionality, come to that) when it goes out of scope: opening files, curl requests, etc.).</p>
+
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
