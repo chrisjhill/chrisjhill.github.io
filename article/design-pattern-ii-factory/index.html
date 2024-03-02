@@ -1,0 +1,201 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>Design Pattern II: Factory</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2009. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>I first wrote about PHP Design Patterns in the first installment, “<a href="/article/design-pattern-i-singleton">Design Pattern I: Singleton</a>”, and here I am again talking about, this time, the Factory pattern.</p>
+		
+			<p>As you might have grasped from the name of the pattern its role is to produce and dispatch a product. In this case a classes. We use the Factory pattern as it is a standard way to create a class which is very similar to other classes by containing the same functions, but implemented in a different way.</p>
+		
+			<p>I always like to use non-technical terms when explaining, and this example will be no different. Cars, there are millions of them in the world and they are produced in factories, so a good choice I think. A factory might produce one type of car one month and another type of car the next. Instead of having to go into the code and change all the new <tt>new Car_Mini()</tt> to <tt>new Car_Beetle()</tt> (for example) we can simple change a settings file and let the Factory worry about what they are doing. I&#8217;ve written the entire example below, so feel free to take a quick look, see if you can understand it then proceed to the next couple paragraphs!</p>
+		
+			<h2>Ready? Let&#8217;s continue!</h2>
+		
+			<p>We first start by defining an <tt>interface</tt>. An <tt>interface</tt> is essentially a blank canvas for us to create subclasses, but which must follow some rules. Every function the <tt>interface</tt> contains must be implemented in each of the subclasses. So, <tt>Car_Mini</tt> has each of the <tt>getWheels()</tt>, <tt>getSteeringWheel()</tt> and <tt>assemble()</tt> functions, but is also free to create some of its own functions. However, because it will be part of the factory it is unlikely to have any other public methods. Same with the <tt>Car_Beetle</tt> class.</p>
+		
+			<p>The next two classes are implementing the <tt>interface</tt>, they don&#8217;t contain any logic in this example, the <tt>assemble()</tt> function just outputs that it has created a car. So we&#8217;ll skip over those classes. Same with the <tt>Singleton</tt> class&#8212;I covered this in the previous article.</p>
+		
+			<p>This leads us onto the Factory class. As you can see we grab the settings class, see which car we are supposed to produce and return a new instance of that car. Now we just need to create the code to get the instance of the car, get the wheels and steering wheel and then assemble them altogether. That’s the good thing with a Factory, you can go about your business of creating cars without actually knowing which car you are making!</p>
+		
+			<p>In this example we might be creating a Mini or a Beetle. Because both <tt>Car_Mini</tt> and <tt>Car_Beetle</tt> have their own code in the standard functions they can go about assembling their car safe in the knowledge that everything is A-Okay. If you were to run the code to the right you would receive the following output:</p>
+		
+			<pre>Mini assembled
+Mini assembled
+Beetle assembled
+Beetle assembled</pre>
+
+			<h2>That&#8217;s a wrap</h2>
+
+			<p>And that&#8217;s the Factory class&#8212;returning a new instance of a class which lets the external code call standard functions safe in the knowledge that they will be run successfully.</p>
+			
+			<pre>&lt;?php
+interface Car
+{
+    public function getWheels();
+    public function getSteeringWheel();
+    public function assemble();
+}
+
+class Car_Mini implements Car
+{
+    public function getWheels() {
+        return $this;
+    }
+    
+    public function getSteeringWheel() {
+        return $this;
+    }
+    
+    public function assemble() {
+        echo 'Mini assembled';
+    }
+}
+
+class Car_Beetle implements Car
+{
+    public function getWheels() {
+        return $this;
+    }
+    
+    public function getSteeringWheel() {
+        return $this;
+    }
+    
+    public function assemble() {
+        echo 'Beetle assembled';
+    }
+}
+
+class Singleton
+{
+    private static $_Singleton;
+    private $_repository = array();
+ 
+    private function __construct(){}
+ 
+    public function getInstance() {
+        if (is_null(self::$_Singleton)) {
+            self::$_Singleton = new Singleton();
+        }
+        return self::$_Singleton;
+    }
+ 
+    public function get($index) {
+        return $this-&gt;_repository[$index];
+    }
+    
+    public function set($index, $value) {
+        $this-&gt;_repository[$index] = $value;
+    }
+}
+
+class Car_Factory
+{
+    public static function create() {
+        $settings = Singleton::getInstance();
+        
+        switch ($settings-&gt;get('car')) {
+            case 'mini' :
+                return new Car_Mini();
+                break;
+            case 'beetle' :
+                return new Car_Beetle();
+                break;
+        }
+    }
+}
+
+// Produce Mini's
+$settings = Singleton::getInstance();
+$settings-&gt;set('car', 'mini');
+$car = Car_Factory::create();
+$car-&gt;getWheels()-&gt;getSteeringWheel()-&gt;assemble();
+$car-&gt;getWheels()-&gt;getSteeringWheel()-&gt;assemble();
+
+// Now change to produce Beetles
+$settings-&gt;set('car', 'beetle');
+$car = Car_Factory::create();
+$car-&gt;getWheels()-&gt;getSteeringWheel()-&gt;assemble();
+$car-&gt;getWheels()-&gt;getSteeringWheel()-&gt;assemble();</pre>
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
