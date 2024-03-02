@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>Battle of the CSS positions</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2008. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>It all began a couple days ago, one slightly dull Tuesday afternoon. The air was thick and the light was dimmed. Ahem, I have a challenge for you; try and place a <tt>div</tt> underneath another. &#8220;Piece of cake,&#8221; you say. &#8220;That&#8217;s hardly a challenge&#8221;. Well, not so it would seem. I was perplexed by what I saw for a few minutes, at least. So much that I wrote this article.</p>
+			
+			<p>The problem comes when you float a <tt>div</tt> and then try and place a <tt>div</tt> positioned absolutely behind it. Try to visualise that in your head for a moment. You obviously just give the floated <tt>div</tt> a higher <tt>z-index</tt>. Problem solved. Case closed. But you&#8217;d be wrong, so very wrong.</p>
+			
+			<p>It seems that when you specify an element with a position (albeit <tt>absolute</tt> or <tt>relative</tt>) it automatically places it before other non-positioned elements. I&#8217;m not sure why and I have yet to explore the mighty Google or <abbr title="World Wide Web Consortium">W3C</abbr> on the matter, but I&#8217;m positive there will be a logical explanation (would someone care to enlighten me, perhaps?).</p>
+			
+			<p>One way to solve the riddle is to set the floated element&#8217;s position to <tt>relative</tt> to, again, place it higher in the viewing ranking and then add that lovely higher <tt>z-index</tt>. This then corrects it in all good browsers (Firefox, Safari and Opera). I assume the behaviour is the same in IE, but I haven&#8217;t checked.</p>
+			
+			<p><strong>Breaking news just in</strong>: I couldn&#8217;t find the explanation on the <a href="http://www.w3.org/TR/CSS2/visuren.html">W3C site under visual formatting model</a>.</p>
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
