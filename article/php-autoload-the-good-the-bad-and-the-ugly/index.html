@@ -1,0 +1,137 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>PHP autoload: The Good, the Bad and the Ugly</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2011. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>The autoload function is one of my favourite aspects of PHP. <a href="/article/php-__auoload">I&#8217;ve even blogged about it before.</a> It makes writing code quicker and more reliable (no more typos or worrying about whether you forgot to include a class file) giving you more time to actually program.</p>
+		
+			<p>But with todays Web we are often including libraries to help with specific tasks, à la <abbr title="Application Program Interfaces">API&#8217;s</abbr>. Some of these can get quite bulky and complex which means they sometimes implement their own autoloader. Of course, this meant that our own autoloader could get overwritten causing all sorts of problems and head scratching.</p>
+		
+			<p>Thankfully there is a way to add multiple autoloaders: <a href="http://www.php.net/manual/en/function.spl-autoload-register.php" target="_blank"> <tt>spl_autoload_register()</tt></a>. This uses a <abbr title="Fist In, First Out">FIFO</abbr> approach, so if you have three different autoloaders it will try the first you declared, then the second, and finally the third. An example of how to use this can be found below.</p>
+		
+			<h2>Defining your autoloader as a standard function</h2>
+		
+			<pre>
+// Set the autoloader to one of our functions
+spl_autoload_register('myAutoloader');
+
+// The autoloader function
+function myAutoloader($class) {
+    // Does the file exist?
+    if (! file_exists(str_replace('_', '/', $className) . '.php')) {
+        return false;
+    }
+
+    // The class exists, include the file
+    include str_replace('_', '/', $className) . '.php';
+}
+</pre>
+
+			<h2>Defining your autoloader in a class</h2>
+
+			<p>You can also use the function to define your autoloader if it is declared inside a class. The implementation is just as simple:</p>
+
+			<pre>
+// Set the autoloader to one of our functions
+spl_autoload_register(class('MyClass', 'myAutoloader'));
+
+// The autoloader class
+class MyClass
+{
+    // The autoloader function
+    public function myAutoloader($class) {
+        // Does the file exist?
+        if (! file_exists(str_replace('_', '/', $className) . '.php')) {
+            return false;
+        }
+
+        // The class exists, include the file
+        include str_replace('_', '/', $className) . '.php';
+    }
+}</pre>
+
+			<h2>The Bad and the Ugly</h2>
+
+			<p>Of course there are a few downsides of having multiple autoloaders. The first being that it&#8217;s going to use more resources &#8211; more memory and more processing power as it loops through each of the autoloaders. Each autoloader might be checking to see if the file exists before including it which means, if you have three separate autoloaders, it&#8217;s going to check to run, potentially, three separate <tt>file_exists()</tt>&#8216;s. When PHP 5.3 emerges and becomes commonplace this should hopefully be cured with namespaces, so that is something to look forward to.</p>
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
