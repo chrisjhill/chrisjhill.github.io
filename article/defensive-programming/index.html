@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>Defensive programming</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2009. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>Earlier in the week, whilst implementing a domain registration API into another client project (and pulling my hair  out), I thought back to a seminar from university. The module was Component Based Design and it was all about writing code in a standard way, helping to aid both the supplier (API creator) and the client (the person using the API). Although I didn’t realise it until now it actually played a large role in how I program today. There are two main approaches for this, Defensive Programming and Design By Contract.</p>
+		
+			<p>Defensive programming is all about the supplier making sure that their code works when parameters passed in might not be what it expected. And also that the client passes in correct information. So in effect the code is validated on both sides. The immediate advantage of this technique is that is will severely reduce the number of bugs since the chances of incorrect information both passed in and validated are slim. The disadvantage of this is longer CPU time and execution. The computer simply needs to parse and run more lines of code. Not so much a problem in todays world where hardware is getting faster and cheaper, but years ago it might have caused people to stop and think. Defensive Programming is generally used when you do not know exactly how your function call will be executed, ensuring nothing bad will happen.</p>
+		
+			<pre>&lt;?php
+class MissionCritical
+{
+    /**
+     * Insert some mission critical information into the database.
+     *
+     * @param int $id
+     * @return boolean
+     */
+    private function insert($id) {
+        return mysql_query("
+            INSERT INTO `research`
+                (`id`)
+            VALUES
+                (" . (int)$id . ")
+        ");
+    }
+}
+
+$missionCritical = new MissionCritical();
+$missionCritical-&gt; insert((int)10);
+</pre>
+
+			<p>Here when we pass the data into the function, we ensure we pass in an integer. We also perform the same in the actual function.</p>
+
+			<p>Design By Contract is different in that the supplier and client know what each is doing, or at least doing what they say they are doing and trusting them to perform that role. The class may say that it validates all country codes to ensure 2 character ISO 3166-1 standards and that the client does not need to, for example, so the client will be able to pass in any value and know that the validation it outside of its scope. Again the pros and cons are immediately noticeable in that it saves processing time, but at the expense that there might possible be bugs and possible security issues. The snippet of code may look like:</p>
+
+			<pre>&lt;?php
+class MissionCritical
+{
+    ...
+}
+
+$missionCritical = new MissionCritical();
+$missionCritical-&gt; insert(10); // Here we are not ensuring it is an int
+                               // We know that `insert` is casting it
+</pre>
+
+			<p>So, which is the better approach? Well, there isn’t one. Security is always a tradeoff.  My general rule of thumb is that any code I write myself handles all data validation from the suppliers end―I really don’t want to have to validate in awkward places which would be better suited elsewhere. Since I am generally the supplier and client I am happy in knowing everything is secure. However when dealing with third party scripts that I cannot read (like the domain registration API I mentioned in the first paragraph) I like to ensure that any data going in is correct. So I like to take the best of both worlds, as I am sure most other programmers do.</p>
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
