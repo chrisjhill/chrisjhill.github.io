@@ -1,0 +1,124 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>PHP __auoload</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2009. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>PHP5 reared it’s head mid 2004, 5 long years ago and all PHP developers rejoiced. Especially me. It gave us lots of new shiny tools to play with, including the obvious improved <abbr title="Object Orientated">OO</abbr> support and my particular favourite: the <tt>__autoload</tt> function.</p>
+			
+			<p>For all you Java developers out there you know that you never have to <tt>include</tt> or <tt>require files</tt>, the Java language instinctively knows where to find them thanks to the compiler. So with the release of PHP5 I was thrilled to be able to do this—including every file you need is a real pain and takes precious time when developing.</p>
+			
+			<p>There will be people out there saying that you shouldn’t use <tt>__autoload</tt> as it makes your  application run slower. However, as computers have become so fast now, in my opinion, this becomes a moot point. Everything is all about maintainability, nowadays. If it saves me 5 hours in development time and 20 hours a year maintenance time I’m a happy man. I would also like to point out that <tt>includes_once</tt> is far, far more expensive than a simple <tt>include</tt>, which is what you people who do not use <tt>__autoload</tt> will have to do at some point. So the performance evens out.</p>
+			
+			<p>I digress. This is supposed to be a quick guide, so let’s take our shoes and socks off and dive right in.</p>
+			
+			<p>So what is this <tt>__autoload</tt> I speak of? Whenever you try and call a class that does not exist the function is triggered, giving you an opportunity to find the class, <tt>include</tt> it, and then tries to perform the class call for the second time. The perfect place for the <tt>__autoload</tt> is in your generic header file, so before any class has been called. So your header might look something like:</p>
+			
+			<pre>&lt;?php
+session_start();
+include $_SERVER['DOCUMENT_ROOT'] . '/library/autoload.function.php';
+</pre>
+			
+			<p>The <tt>__autoload</tt> file simply contains 1 function. No classes, just 1 function.</p>
+			
+			<pre>&lt;?php
+function __autoload($className) {
+	// Our code to go here
+}
+</pre>
+			
+			<p>So now we somehow need to dynamically include our class whenver this function is called. The generally accepted way is to name your class with reference to its location in the file structure. So let’s assume we have all our PHP classes in the <tt>library</tt> folder split into 3 further folders called <tt>Model</tt>, <tt>Controller</tt> and <tt>View</tt>. If we had a formatting class that we wanted to place in the <tt>Model</tt> directory, then we would name the class <tt>Model_Format</tt>.</p>
+			
+			<p>When we try and instantiate this class, <tt>new Model_Format()</tt>, it will trigger the <tt>__autoload</tt> function which will be passed 1 parameter, the <tt>$className</tt> variable which in this case is <tt>Model_Format</tt>. So we now need to try and find out where the file is and include it before the script dies on us. We can easily do this by changing the underscore to a forward slash which gives us the class location. So our <tt>__autoload</tt> will look like:</p>
+			
+			<pre>&lt;?php
+function __autoload($className) {
+	include $_SERVER['DOCUMENT_ROOT']
+		. '/library/'
+		. str_replace('_', '/', $className)
+		. '.class.php';
+}
+</pre>
+			
+			<p>And there we have it, no need to ever <tt>include</tt> a class file again! You can of course extend the function to use some form of error checking or <a href="/article/php-exception-handling">exception handing</a>, in fact it is strongly recommended. Hope that saves you many an hour whilst debugging.</p>
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
