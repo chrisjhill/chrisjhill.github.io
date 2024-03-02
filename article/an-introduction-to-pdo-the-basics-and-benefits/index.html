@@ -1,0 +1,245 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Christopher Hill</title>
+	<meta name="keywords" content="christopher hill, chris hill, web developer, php programmer, personal blog">
+	<meta name="description" content="I'm Chris. A thirty-something husband, graduate, star gazer, aspiring triathlete, vegetarian, reader, writer, cinemaniac, and love of life in general.">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="shortcut icon" href="favicon.ico" type="image/ico">
+
+	<meta name="theme-color" content="#efefef">
+	<meta name="msapplication-navbutton-color" content="#efefef">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#efefef">
+</head>
+<body>
+	
+<nav class="nav__overlay">
+	<div class="container container--header">
+		<a href="/" class="icon_close">
+			<i class="fas fa-times"></i>
+		</a>
+
+		<ul>
+			<li><a href="/#i-am">About</a></li>
+			<li><a href="/#i-made">Development</a></li>
+			<li><a href="/#i-write">Blog</a></li>
+			<li><a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+
+<header class="article__single">
+	<div class="container container--header">
+		<a href="/" class="icon_nav">
+			<i class="fas fa-bars"></i>
+			<span class="icon__label">Menu</span>
+		</a>
+
+		<!-- Start of Article //-->
+		<h1>An introduction to PDO: The basics and benefits</h1>
+
+		<p style="background:#f7f7f7;border-left:4px solid #ff6961;border-radius:5px;padding:1rem;">
+		This is an old post from 2012. As such, it might not be relevant anymore.</p>
+		</p>
+
+		<div class="article__single_content">
+			<p>MySQL is/was deeply integrated within PHP. No doubt you have seen and used the <tt>mysql_*()</tt> functions at some stage, but there is an alternative that makes your database interactions much more reliable. It&#8217;s called PDO (PHP Data Object) and here&#8217;s a quick guide that should get you up to speed in no time at all.</p>
+
+			<h2>Why use PDO?</h2>
+
+			<p>The number one reason is security. With plain MySQL functions you need to sanitise the input manually using type casting or <tt>mysql_real_escape_string()</tt>. With PDO this is all taken care for us and means we no longer have to worry about SQL injection. Great.</p>
+
+			<p>The ability to easily migrate to a different database engine (SQLite, Oracle, MSSQL, ODBC, etc.) is the cherry on top of the cake.</p>
+
+			<h2>How to connect to a database</h2>
+
+			<p>Connecting is just as easy as in standard MySQL functions, it just looks slightly different. We wrap the connection attempt in a try-catch statement so we can gracefully handle errors. E.g.</p>
+
+			<pre>
+try {
+	$dbh = new PDO("mysql:host=localhost;dbname=my_db_table", 'username', 'password');
+} catch(PDOException $e) {
+	echo $e-&gt;getMessage();
+}
+</pre>
+			
+			<p>One thing I always do is instantly tell PDO I want associative arrays returned. I prefer them to objects, but your milage may vary. I also say that we want to deal exclusively in UTF8.</p>
+			
+			<pre lang="php">
+// Connection string, UTF-8 encoding, and fetch associative arrays
+$dbh = new PDO("mysql:host=localhost;dbname=my_db_table;charset=utf8", 'username', 'password');
+$dbh-&gt;setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+</pre>
+			
+			<h2>Inserting rows</h2>
+			
+			<p>Finally, some database interaction which lets us use the benefit of PDO &#8211; prepared statements. Essentially we insert placeholders into our SQL and define a value for those outside the statement. We do not, I repeat, we do not ever place user input directly into the SQL. This is susceptible to SQL injection.</p>
+			
+			<p>Secondly, there are two ways to define these placeholders in your SQL statement: Positional and Named. You only ever want to use Named placeholders. Positional are, quite frankly, a silly idea. Positional placeholders ultimately will end up in inserting data in the wrong columns, or selecting data using an incorrect parameter. I&#8217;m only going to show you the correct way (in my opinion) so as to not give you bad habits.</p>
+			
+			<pre>
+// Define the SQL with named placeholders
+$sth = $dbh-&gt;prepare("INSERT INTO `table` (`id`, `title`) VALUES (:id, :title)");
+
+// Execute the query, replacing the placeholders with their true value
+$sth-&gt;execute(array(
+	':id'    =&gt; 123,
+	':title' =&gt; 'I am the title'
+));
+</pre>
+			
+			<p>You can see that we create a variable <tt>$sth</tt> (statement handler) which calls the <tt>$dbh</tt> (database handler) prepare method. The SQL should look pretty standard until we reach the <tt>:id</tt> and <tt>:title</tt>. These are our named placeholders. We can run this query by calling the <tt>execute()</tt> function which takes an array of the placeholder data. Quite simple.</p>
+			
+			<p>The benefits of this are that our data is automatically escaped &#8211; we do not have to worry about calling <tt>mysql_real_escape_string()</tt>, after all we might not be using MySQL. Also, the benefits are that we can call the <tt>execute()</tt> functions many times without re-declaring the SQL statement, which will speed up our code execution.</p>
+
+			<pre>
+// Insert three rows into the table
+$sth-&gt;execute(array(':id' =&gt; 123, ':title' =&gt; 'First title'));
+$sth-&gt;execute(array(':id' =&gt; 456, ':title' =&gt; 'Second title'));
+$sth-&gt;execute(array(':id' =&gt; 789, ':title' =&gt; 'Third title'));
+</pre>
+			
+			<h2>Selecting</h2>
+			
+			<p>Now that you have just mastered inserting data, selecting is a piece of cake, it&#8217;s very similar, and also gives us a chance to go over a few new functions.</p>
+			
+			<pre>
+// Select some data
+$sth = $dbh-&gt;prepare("SELECT `id`, `title` FROM `table` WHERE `id` &gt; :country_id");
+
+// Execute the query, replacing the placeholders with their true value
+$sth-&gt;execute(array(
+	':country_id' =&gt; 200
+));
+
+// How many records did we find?
+echo 'We found ' . $sth-&gt;rowCount() . ' records.';
+
+// Loop over the data
+while ($row = $sth-&gt;fetch()) {
+	echo 'My ID is ' . (int)$row['id'] . ' and my title is ' . htmlentities($row['title']);
+}
+</pre>
+			
+			<p>To get the number of rows returned you can use the <tt>rowCount()</tt> function (akin to the <tt>mysql_num_rows()</tt>), and to loop over the data you can use the <tt>fetch()</tt> function (akin to the <tt>mysql_fetch_assoc()</tt>). If you wanted to return all of the rows into a variable without performing a loop you can do <tt>fetchAll()</tt>. Otherwise there are no gotcha&#8217;s here.</p>
+			
+			<h2>Updating data</h2>
+			
+			<p>You&#8217;re going to be bored of me saying this, but there is nothing different here than the previous examples:</p>
+			
+			<pre>
+// Update a row
+$sth = $dbh-&gt;prepare("UPDATE `table` SET `title` = :title WHERE `id` = :id LIMIT 1");
+
+// Execute the query, replacing the placeholders with their true value
+$sth-&gt;execute(array(
+	':title' =&gt; 'I am the newly updated title',
+	':id'    =&gt; 123
+));
+
+// Did we manage to update the row?
+if ($sth-&gt;rowCount() &gt;= 1) {
+	echo 'Yup, the row was updated.';
+} else {
+	echo 'Nope, row was not updated.';
+}
+</pre>
+			
+			<h2>Deleting data</h2>
+			
+			<p>Again, nothing too complex:</p>
+			
+			<pre>
+// Delete a row
+$sth = $dbh-&gt;prepare("DELETE FROM `table` WHERE `id` = :id LIMIT 1");
+
+// Execute the query, replacing the placeholders with their true value
+$sth-&gt;execute(array(
+	':id' =&gt; 123
+));
+
+// Did we manage to delete the row?
+if ($sth-&gt;rowCount() &gt;= 1) {
+	echo 'Yup, the row was deleted.';
+} else {
+	echo 'Nope, row was not deleted.';
+}
+</pre>
+			
+			<h2>Binding params, and execution</h2>
+			
+			<p>This comes down to preference. I prefer the <tt>execute()</tt> because we are avoiding function calls, speeding up our code, and easier to update. But I&#8217;ll go over all three.</p>
+			
+			<p><tt>bindParam()</tt> is asking for a reference. It is not asking for an immediate value, it only receives the value once the execute() function is called. This is probably the most confusing aspect of PDO, so let me give you an example.</p>
+			
+			<pre>
+// Select some data
+$sth = $dbh-&gt;prepare("SELECT `id`, `title` FROM `table` WHERE `id` &gt; :country_id");
+
+// Set binds
+$sth-&gt;bindParam(':id', $tableId);
+
+// Define variables
+$tableId = 123;
+
+// Execute
+$sth-&gt;execute();
+</pre>
+			
+			<p>This works because, although <tt>$tableId</tt> does not exist when referenced, it is defined before our <tt>execute()</tt> call. The reason I do not like this is because it is leaving an uncertainty to the statement. You could quite easily bind the parameter, then change the variable for some reason and cause an error. You also have the problem that literals can not be used since they cannot be referenced. So, <tt>bindParam(':id', 123)</tt> would result in an error.</p>
+			
+			<p><tt>bindValue()</tt> to the rescue! This works in the same way as <tt>bindParam()</tt>, but it uses the value straight away, be it a literal or a variable.</p>
+			
+			<p><tt>execute()</tt> is what we have been using in the previous code samples, so does not need an introduction.</p>
+			
+			<h2>The same thing three times?</h2>
+			
+			<p><tt>exec()</tt>, <tt>execute()</tt>, and <tt>query()</tt></p>
+			
+			<p>These all do the same thing, run a query. But they do so in different ways. In my opinion you should only ever use <tt>execute()</tt> as it is the only one which works with prepared statements which, in time, the other two can become susceptible to SQL injection. They also have their nuances, <tt>exec()</tt> can only be used for queries that do not return data objects (e.g., SELECT statements), and generally speaking <tt>query()</tt> is only used on SELECT statements. But since you cannot use prepared statements (e.g., placeholders), I wouldn&#8217;t bother with them.</p>
+			
+			<h2>Wrapup</h2>
+			
+			<p>You now know the basics of PDO. You can see it isn&#8217;t a scary monster and it really is easy to switch. You now know how to insert, select, update, and delete rows. You know how to safely pass in parameters using placeholders (remember, named not positional!) and so you now never have to worry about SQL injection.</p>
+			<!-- End of article //-->
+		</div>
+	</div>
+</header>
+	
+<footer>
+	<div class="container">
+		<p>
+			<strong>I'm Chris.</strong>
+			<span>A thirty-something husband, graduate, star gazer, aspiring triathlete, explorer, vegetarian, reader, writer, cinemaniac, and lover of life in general.</span>
+		</p>
+
+		<p>
+			Contents copyright © Christopher Hill unless stated otherwise.
+			This is my website. There are many like it, but this one is mine.
+		</p>
+
+		<p>
+			<a href="/#i-am">About</a> |
+			<a href="/#i-made">Development</a> |
+			<a href="/#i-write">Blog</a> |
+			<a href="mailto:cjhill@gmail.com?subject=Website contact request">Contact</a>
+		</p>
+	</div>
+</footer>
+		
+<link rel="stylesheet" media="screen" preload href="/styles/styles.css?v=2021-03-12.02" type="text/css">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=EB+Garamond">
+<link rel="stylesheet" media="screen" preload href="https://fonts.googleapis.com/css?family=Ubuntu:300,700">
+<link rel="stylesheet" media="screen" preload href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script defer src="/scripts/scripts.js?v=2021-03-12.02"></script>
+<script>
+	window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+	ga('create','UA-4241275-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+</body>
+</html>
